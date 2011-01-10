@@ -1,0 +1,14 @@
+This is my attempt at the Studious Student problem.
+
+Study.rb is my initial attempt, but I'm still missing something in the comparison.
+
+alternate_study.rb is a bruteforce solution where I create all of the permutations of the words, join the words within each permutation, and then sort the permutations lexicographically. From here I can easily pick off the proper result.
+
+An example of where my initial implementation is having issues:
+
+Input: ["ld", "r", "d", "lo", "rlo", "rlol", "l", "rd", "ix"]
+Output: 
+	Check: dixldllordrlolrlor
+	Best:  dixldlolrdrlorlolr
+
+Clearly Check comes out better.
