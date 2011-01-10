@@ -65,6 +65,23 @@ class Board
   end
 end
 
+
+class SlotProbability
+  attr_accessor :prob, :id
+
+  def initialize id prob
+    @prob = prob
+    @id = id
+  end
+    
+  def <=>other
+    t = @prob.<=>(other.prob)
+    return t unless t == 0
+    return @id.<=>(other.id)
+  end
+
+
+end
 def probability(row, column, board, goal, probability)
   puts "Row: #{row} Column: #{column}"
 
@@ -107,6 +124,7 @@ n.times do
   end
   puts board
   puts goal
+  answer = []
   (0..input[1].to_i-2).each do |i|
     puts "#{i}: #{probability(0, 2*i+1, board, goal, 1)}"
   end
