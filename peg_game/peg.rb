@@ -24,8 +24,10 @@ class Board
   def initialize r, c
     @rows = r-1
     @b = []
+    @prob = []
     (0..r-1).each do |i|
       temp = []
+      prob_temp = []
       if i % 2 == 0
         top = c*2-2
       else
@@ -39,11 +41,14 @@ class Board
         end
         if n%2 == 0
           temp << Peg.new(1, e)
+          prob_temp << nil
         else 
           temp << Peg.new(0, e)
+          prob_temp << nil
         end
       end
       @b << temp
+      @prob << prob_temp
     end
   end
 
@@ -63,13 +68,43 @@ class Board
     end
     return string
   end
+  def probability(row, column, goal, probability)
+
+    if row % 2 == 0
+      offset = -1
+    else
+      offset = 1
+    end
+
+    if @prob[row][column] != nil
+      return @prob[row][column]*probability
+    end
+
+    if @b[row][column].val == 0
+      if row == @rows
+        return probability if column == goal
+        return 0
+      end
+      return probability(row+1, column+offset, goal, probability)
+    else
+      if @b[row][column].e
+        if column == 0
+          return probability(row, column+1, goal, probability)
+        else
+          return probability(row, column-1, goal, probability)
+        end
+      else
+        return probability(row, column+1, goal, probability*0.5) + probability(row, column-1, goal, probability*0.5)
+      end
+    end
+  end
 end
 
 
 class SlotProbability
   attr_accessor :prob, :id
 
-  def initialize id prob
+  def initialize id, prob
     @prob = prob
     @id = id
   end
@@ -80,34 +115,11 @@ class SlotProbability
     return @id.<=>(other.id)
   end
 
-
-end
-def probability(row, column, board, goal, probability)
-  puts "Row: #{row} Column: #{column}"
-
-  if row % 2 == 0
-    offset = -1
-  else
-    offset = 1
+  def to_s
+    return "#{@id}"+" %.6f" % @prob
   end
 
-  if board.b[row][column].val == 0
-    if row == board.rows
-      return probability if column == goal
-      return 0
-    end
-    return probability(row+1, column+offset, board, goal, probability)
-  else
-    if board.b[row][column].e
-      if column == 0
-        return probability(row, column+1, board, goal, probability)
-      else
-        return probability(row, column-1, board, goal, probability)
-      end
-    else
-      return probability(row, column+1, board, goal, probability*0.5) + probability(row, column-1, board, goal, probability*0.5)
-    end
-  end
+
 end
 
 file = File.open(ARGV[0])
@@ -122,14 +134,12 @@ n.times do
   m.times do |i|
     board.remove_peg(input[2*i+4].to_i, input[2*i+5].to_i)
   end
-  puts board
-  puts goal
+  # puts board
+  # puts goal
   answer = []
   (0..input[1].to_i-2).each do |i|
-    puts "#{i}: #{probability(0, 2*i+1, board, goal, 1)}"
+    answer << SlotProbability.new(i, board.probability(0, 2*i+1,goal, 1))
   end
-  puts ""
-  puts "-------------------"
-  puts ""
+  puts answer.sort.reverse.shift
 end
 
