@@ -1,0 +1,7 @@
+Squares.rb was my initial solution to this problem, but it turns out that the ruby code is _very_ slow. I'm sure there's a better way of doing this, but for now, the C code is very fast, and works just fine.
+
+To compile squares.c:
+gcc -std=c99 -O3 -Wall -lm squares.c -o squares
+
+Usage:
+./squares [input filename]
