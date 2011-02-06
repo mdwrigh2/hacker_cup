@@ -1,0 +1,4 @@
+A solution to the Peg problem. It works, but is pretty slow on very large boards. Some dynamic programming could make this much much quicker.
+
+Usage:
+ruby peg.rb [input file]
